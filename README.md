@@ -6,20 +6,22 @@
 
 ## Setup notes
 - [ABB Terra AC wallbox](https://new.abb.com/ev-charging/terra-ac-wallbox) is an affordable and well known EVSE with OCPP support.
-  This EVSE is preconfigured to use ABB cloud service for remote management and Apps. For connecting the charger with your own OCPP server you need to contact your ABB sales representitive and ask an account for:
-  * [TerraConfig Portal](https://abb.installer.chargedot.com)
-  * [TerraConfig APP](https://play.google.com/store/apps/details?id=com.abb.nebula)
-
+  By default the charger is preconfigured to use an ABB cloud service for remote management and Apps. Unfortunately changing the OCPP server to your own needs some extra steps.
   
-
-  * TerraConfig Portal account allows to set up the OCPP connection profile in the TerraConfig Portal.
+  You either need help from some electrician or company with experience with this charger or you can ask your ABB sales represetitive for following accounts: 
+  * [TerraConfig Portal](https://abb.installer.chargedot.com) for setting up a custom OCPP profile
+  * [TerraConfig APP](https://play.google.com/store/apps/details?id=com.abb.nebula) for downloading the OCPP profile to your charger
+  
+  They are separate accounts tied to the same client, one is probably meant for service providers and the other for installers but to finish the configuration you need both.
     
-    Example values for the profile:
+    Example values for the OCPP profile:
     * Type: ws:// (this is an unsecure WebSocket version, not tested with the more secure wss://)
     * URL: 192.168.1.3:9000 (use your HomeAssistant server IP address)
     * Protocol Type: OCPP
     * Protocol Version: ocpp16j
-  * TerraConfig APP account. Use TerraConfig APP on the mobile device with this account to connect to the charger over Bluetooth using the chargers PIN code. You can download the preconfigured OCPP connection profile to the charger using the APP.
+ 
+  Use TerraConfig APP on the mobile device TerraConfig APP account to connect to the charger over Bluetooth and adding the charger using the chargers PIN code. You can then download the preconfigured OCPP profile to the charger.
+  
 - [Home Assistant OS](https://www.home-assistant.io/installation/generic-x86-64) runs on a small Intel NUC PC with 4G of RAM and 128GB SSD storage.
 - [HACS](https://hacs.xyz/docs/configuration/basic/) offers community supported Integrations for HomeAssistant, we need it to add OCPP support.
 - [OCPP Integration](https://github.com/lbbrhzn/ocpp) can be installed using HACS
