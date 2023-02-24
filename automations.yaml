@@ -18,22 +18,23 @@ action:
     target:
       entity_id: number.charger_maximum_current
     data:
-      value: |
+      value: >
         {# main fuse amps #}
         {% set main_fuse = 25 %}
-        
+
         {# how much more current is available #}
         {% set current_available = main_fuse - states('sensor.actual_current')|int %}
 
         {# charging #}
         {% if is_state('sensor.charger_status_connector', 'Charging') %}
-          {# there is more current available than the charger can use #}
-          {% if states('number.charger_maximum_current')|int + current_available > states('sensor.charger_current_offered')|int %}
-            {# set charging current to maximum that the charger can use #}
-            {{ states('sensor.charger_current_offered') }}
-          {% else %}
+          {# available current is withing the chargers capabilities #}          
+          {% if states('number.charger_maximum_current')|int + current_available < states('sensor.charger_current_offered')|int %}
             {# use all the available current #}
             {{ states('number.charger_maximum_current')|int + current_available  }}
+          {# there is more current available than the charger can use #}
+          {% else %}
+            {# set charging current to maximum that the charger can use #}
+            {{ states('sensor.charger_current_offered') }}
           {% endif %}
         {# not charging, adjust current to avoid triping the breaker when charging starts #}
         {% else %}
