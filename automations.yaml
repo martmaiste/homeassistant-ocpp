@@ -1,0 +1,54 @@
+alias: Adjust Charging Current
+description: Adjust charging current depending on the load on main lines
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.actual_current
+condition:
+  - condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.actual_current
+        above: 25
+      - condition: numeric_state
+        entity_id: sensor.actual_current
+        below: 24
+action:
+  - service: number.set_value
+    target:
+      entity_id: number.charger_maximum_current
+    data:
+      value: |
+        {# main fuse amps #}
+        {% set main_fuse = 25 %}
+        
+        {# how much more current is available #}
+        {% set current_available = main_fuse - states('sensor.actual_current')|int %}
+
+        {# charger is not in use #}
+        {# to avoid triping the breaker when charging starts #}
+        {% if is_state('switch.charger_availability', 'on') %}
+          {# there is more current available than the charger can use #}
+          {% if current_available > states('sensor.charger_current_offered')|int %}
+            {# set charging current to maximum that the charger can use #}
+            {{ states('sensor.charger_current_offered') }}
+          {# only little or no current available #}
+          {% elif current_available < 1 %}
+            {# charge at minimum rate. charging will stop and would not start again if set to 0 #}
+            {{ 1 }}          
+          {% else %}
+            {# use maximum current available #}
+            {{ current_available }}
+          {% endif %}   
+        {# charger is in use #}
+        {% else %}
+          {# there is more current available than the charger can use #}
+          {% if states('number.charger_maximum_current')|int + current_available > states('sensor.charger_current_offered')|int %}
+            {# set charging current to maximum that the charger can use #}
+            {{ states('sensor.charger_current_offered') }}
+          {% else %}
+            {# use all the available current #}
+            {{ states('number.charger_maximum_current')|int + current_available  }}
+          {% endif %}
+        {% endif %}
+mode: single
