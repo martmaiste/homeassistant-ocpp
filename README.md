@@ -1,4 +1,4 @@
-# HomeAssistant OCPP + Shelly 3em load balacing
+# HomeAssistant OCPP + Shelly 3em = load balacing
 
 ## TLDR;
 - configuration.yaml includes the sensor templates that calculate the total power and current on the most loaded phase
@@ -27,3 +27,4 @@
 - [HACS](https://hacs.xyz/docs/configuration/basic/) offers community supported Integrations for HomeAssistant, we need it to add OCPP support.
 - [OCPP Integration](https://github.com/lbbrhzn/ocpp) can be installed using HACS
 
+After OCPP integration is set up the charger can connect to HomeAssistand and start sending statistics and polling commands. The two main features are Charger Availability that show whether the charger is in use or not. The other is Charger Maximum Current that adjusts the maximum allowed current for your charger.
