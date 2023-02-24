@@ -11,7 +11,8 @@
   You either need help from someone who has experience with this charger or contact your ABB sales represetitive for following accounts: 
   * [TerraConfig Portal](https://abb.installer.chargedot.com) for setting up a custom OCPP profile
   * [TerraConfig APP](https://play.google.com/store/apps/details?id=com.abb.nebula) for downloading the OCPP profile to your charger
-  * [Terra AC: TerraConfig App Step by Step Guide](https://library.e.abb.com/public/013efbe844a94afea2d989eb4291f9ed/TerraConfigApp%20Step%20by%20Step%20Guide.pdf)
+
+[Terra AC: TerraConfig App Step by Step Guide](https://library.e.abb.com/public/013efbe844a94afea2d989eb4291f9ed/TerraConfigApp%20Step%20by%20Step%20Guide.pdf)
   
   They are separate accounts tied to the same client, one is probably meant for service providers and the other for installers but to finish the configuration you need both.
     
