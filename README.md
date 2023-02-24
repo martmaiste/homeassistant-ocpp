@@ -6,7 +6,7 @@
 
 ## Setup notes
 - [ABB Terra AC wallbox](https://new.abb.com/ev-charging/terra-ac-wallbox) is an affordable and well known EVSE with OCPP support.
-  By default the charger is preconfigured to use an ABB cloud service for remote management and Apps. Unfortunately changing the OCPP server to your own needs some extra steps.
+  By default the charger is preconfigured to use the ABB cloud service for remote management and Apps. Unfortunately changing the OCPP server to your own needs some extra steps.
   
   You either need help from an electrician or a company or a friend who has experience with this charger or your ABB sales represetitive for following accounts: 
   * [TerraConfig Portal](https://abb.installer.chargedot.com) for setting up a custom OCPP profile
