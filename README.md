@@ -1,7 +1,7 @@
 # HomeAssistant OCPP + Shelly em3 = load balacing
 
 ## TL;DR
-- [configuration.yaml](configuration.yaml) includes the sensor templates that calculate the total power and current on the most loaded phase
+- [configuration.yaml](configuration.yaml) includes the sensor templates that calculates the total power and current on the most loaded phase
 - [automations.yaml](automations.yaml) includes the automation for adjusting the charger current depending on the house load
 
 ## Setup notes
