@@ -1,54 +1,33 @@
 alias: Adjust Charging Current
-description: Adjust charging current depending on the load on main lines
-trigger:
-  - platform: state
-    entity_id:
+description: Control EV charger current to avoid overcurrent
+triggers:
+  - entity_id:
       - sensor.actual_current
-condition:
-  - condition: or
-    conditions:
-      - condition: numeric_state
-        entity_id: sensor.actual_current
-        above: 25
-      - condition: numeric_state
-        entity_id: sensor.actual_current
-        below: 24
-action:
-  - service: number.set_value
+    trigger: state
+conditions:
+  - condition: state
+    entity_id: sensor.charger_status_connector
+    state: Charging
+    enabled: true
+actions:
+  - data:
+      value: >
+        {% set min_charge_current = 6 %}
+        {% set max_charge_current = 16 %}
+        {% set max_total_current = states('input_number.maximum_load') | float | default(25) %}
+        {% set current_charger_setting = states('number.charger_maximum_current') | float %}
+        {% set measured_current = states('sensor.actual_current') | float | default(none) %}
+
+        {% set new_current = max_total_current - measured_current + current_charger_setting %}
+        {% if new_current > max_charge_current %}
+          {% set new_current = max_charge_current %}
+        {% endif %} {% if new_current < min_charge_current %}
+          {% set new_current = min_charge_current %}
+        {% endif %}
+
+        {{ new_current | round(0, 'floor') }}
     target:
       entity_id: number.charger_maximum_current
-    data:
-      value: >
-        {# main fuse amps #}
-        {% set main_fuse = 25 %}
-
-        {# how much more current is available #}
-        {% set current_available = main_fuse - states('sensor.actual_current')|int %}
-
-        {# charging #}
-        {% if is_state('sensor.charger_status_connector', 'Charging') %}
-          {# available current is withing the chargers capabilities #}          
-          {% if states('number.charger_maximum_current')|int + current_available < states('sensor.charger_current_offered')|int %}
-            {# use all the available current #}
-            {{ states('number.charger_maximum_current')|int + current_available  }}
-          {# there is more current available than the charger can use #}
-          {% else %}
-            {# set charging current to maximum that the charger can use #}
-            {{ states('sensor.charger_current_offered') }}
-          {% endif %}
-        {# not charging, adjust current to avoid triping the breaker when charging starts #}
-        {% else %}
-          {# there is more current available than the charger can use #}
-          {% if current_available > states('sensor.charger_current_offered')|int %}
-            {# set charging current to maximum that the charger can use #}
-            {{ states('sensor.charger_current_offered') }}
-          {# only little or no current available #}
-          {% elif current_available < 1 %}
-            {# charge at minimum rate. charging will stop and would not start again if set to 0 #}
-            {{ 1 }}          
-          {% else %}
-            {# use maximum current available #}
-            {{ current_available }}
-          {% endif %}   
-        {% endif %}
+    action: number.set_value
 mode: single
+max: 3
